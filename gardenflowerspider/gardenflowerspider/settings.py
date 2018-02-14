@@ -91,4 +91,4 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # Directory where files will be downloaded
-FILES_STORE = "~/Dropbox/Meus_Trabalhos/USP/Clones/scrapy-flower-images/gardenflowerspider/output"
+FILES_STORE = "output"
