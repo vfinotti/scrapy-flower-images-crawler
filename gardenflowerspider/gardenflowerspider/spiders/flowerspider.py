@@ -20,11 +20,10 @@ class FlowerSpider(scrapy.Spider):
 
         url = response.xpath('//tr[./td/table/tbody/tr/td/b[contains(., "Plant:")]]')
         for flowerset in url:
-            yield {
-                'name' : extract_whole_text(flowerset.css('a ::text')),
-                'image': flowerset.css('img ::attr(src)').extract_first()
-            }
-        #yield scrapy.Request(url.xpath("@href").extract_first(), self.parse_page)
+            imageURL = 'https://garden.org' + flowerset.css('img ::attr(src)').extract_first()
+            flower_name = extract_whole_text(flowerset.css('a ::text'))
+
+            yield GardenFlower(flower_name=flower_name, file_urls=[imageURL])
 
     # def parse_page(self, response):
     #     # loop over all cover link elements that link off to the large
