@@ -12,7 +12,9 @@ def extract_whole_text(url):
 class FlowerSpider(scrapy.Spider):
     name = "garden-flower-spider"
     # URL of plants photos of the last year period
-    start_urls = ["https://garden.org/apps/plant_photos/view/year/popular/0/?q_caption=&q_gallery="]
+    start_urls = [#"https://garden.org/apps/plant_photos/view/year/popular/0/?q_caption=&q_gallery=",
+                  "https://garden.org/apps/plant_photos/view/year/popular/0/?q_caption=&q_gallery=bloom", # just bloom pictures
+    ]
 
     def parse(self, response):
         # picking all 'tr' nodes, no matter where they are, if the subnode
