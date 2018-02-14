@@ -15,6 +15,5 @@ class GardenflowerspiderItem(scrapy.Item):
 
 class GardenFlower(scrapy.Item):
     flower_name = scrapy.Field()
-    flower_color = scrapy.Field()
     file_urls = scrapy.Field()
     files = scrapy.Field()
