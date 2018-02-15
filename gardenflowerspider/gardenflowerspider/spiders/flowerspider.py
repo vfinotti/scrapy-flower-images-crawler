@@ -1,6 +1,7 @@
 from gardenflowerspider.items import GardenFlower
 import datetime
 import scrapy
+import time
 
 def extract_whole_text(url):
     url_text = ''
@@ -17,45 +18,43 @@ class FlowerSpider(scrapy.Spider):
     ]
 
     def parse(self, response):
+
+        # Finds the current page. 'page_info' is in the following format: "Page
+        # XX of YY • ". Splitting it at the spaces, the current page (XX) is
+        # the element [1] and the last page (YY) is the element [3]
+        page_info = response.css('div.page_chunk').css('div ::text').extract_first()
+        current_page = int(page_info.split(' ')[1])
+        last_page = int(page_info.split(' ')[3])
+
         # picking all 'tr' nodes, no matter where they are, if the subnode
         # 'td/table/tbody/tr/td/b' contains the text 'Plant:'
-
         url = response.xpath('//tr[./td/table/tbody/tr/td/b[contains(., "Plant:")]]')
-        for flowerset in url:
-            imageURL = 'https://garden.org' + flowerset.css('img ::attr(src)').extract_first()
-            flower_name = extract_whole_text(flowerset.css('a ::text'))
 
-            yield GardenFlower(flower_name=flower_name, file_urls=[imageURL])
+        # download if all elements (20) were downloaded or if this is the last
+        # page, which doesn't always contain 20 elements
+        if ((len(url) == 20) or (current_page == last_page)):
+            for flowerset in url:
+                imageURL = 'https://garden.org' + flowerset.css('img ::attr(src)').extract_first()
+                flower_name = extract_whole_text(flowerset.css('a ::text'))
 
-    # def parse_page(self, response):
-    #     # loop over all cover link elements that link off to the large
-    #     # cover of the magazine and yield a request to grab the cover
-    #     # data and image
-    #     for href in response.xpath("//a[contains(., 'Large Cover')]"):
-    #         yield scrapy.Request(href.xpath("@href").extract_first(),
-    #     			 self.parse_covers)
+                yield GardenFlower(flower_name=flower_name, page=current_page, file_urls=[imageURL])
 
-    #     # extract the 'Next' link from the pagination, load it, and
-    #     # parse it
-    #     next = response.css("div.pages").xpath("a[contains(., 'Next')]")
-    #     yield scrapy.Request(next.xpath("@href").extract_first(), self.parse_page)
-
-
-    # def parse_covers(self, response):
-    #     # grab the URL of the cover image
-    #     img = response.css(".art-cover-photo figure a img").xpath("@src")
-    #     imageURL = img.extract_first()
-
-    #     # grab the title and publication date of the current issue
-    #     title = response.css(".content-main-aside h1::text").extract_first()
-    #     year = response.css(".content-main-aside h1 time a::text").extract_first()
-    #     month = response.css(".content-main-aside h1 time::text").extract_first()[:-2]
-
-    #     # parse the date
-    #     date = "{} {}".format(month, year).replace(".", "")
-    #     d = datetime.datetime.strptime(date, "%b %d %Y")
-    #     pub = "{}-{}-{}".format(d.year, str(d.month).zfill(2), str(d.day).zfill(2))
-
-    #     # yield the result
-    #     yield MagazineCover(title=title, pubDate=pub, file_urls=[imageURL])
         
+        # reload page if there are less then 20 pictures and it is not the last
+        # page
+        if ((len(url) < 20) and (current_page != last_page)) :
+            next_page = 'https://garden.org/apps/plant_photos/view/year/popular/0/?q_caption=&q_gallery=bloom&offset=' + str(20*(current_page-1))
+            yield scrapy.Request(
+                response.urljoin(next_page),
+                dont_filter = True,
+                callback=self.parse
+            )
+        # Test if current page is the last. If not, go to next page
+        elif (current_page < last_page):
+            next_page = 'https://garden.org' + response.css('div.page_chunk').xpath('.//a[contains(., "' + str(current_page + 1) + '")]').css('::attr(href)').extract_first()
+            yield scrapy.Request(
+                response.urljoin(next_page),
+                dont_filter = True,
+                callback=self.parse
+            )
+
