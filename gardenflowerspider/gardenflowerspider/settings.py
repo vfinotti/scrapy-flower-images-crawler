@@ -91,4 +91,5 @@ ITEM_PIPELINES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # Directory where files will be downloaded
-FILES_STORE = "output"
+FILES_STORE = "/home/vfinotti/Pictures/output"
+
