@@ -21,7 +21,6 @@ class SugarcaneSpider(scrapy.Spider):
         # Finds the current page. 'page_info' is in the following format: "Page
         # XX of YY • ". Splitting it at the spaces, the current page (XX) is
         # the element [1] and the last page (YY) is the element [3]
-        print('NUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
         # search the text of any node whose class is 'page-max', and then extraxct the first result
         # page_info = response.xpath("//*[contains(@class, 'page-max')]/text()").extract_first()
         last_page = int(response.xpath("//*[contains(@class, 'page-max')]/text()").extract_first())
