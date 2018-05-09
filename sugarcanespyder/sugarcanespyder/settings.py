@@ -64,9 +64,11 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
+ITEM_PIPELINES = {
 #    'sugarcanespyder.pipelines.SugarcanespyderPipeline': 300,
-#}
+    'scrapy.contrib.pipeline.images.FilesPipeline': 1,
+
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
@@ -90,5 +92,4 @@ ROBOTSTXT_OBEY = True
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # Directory where files will be downloaded
-FILES_STORE = "~/Pictures/scrapyoutput/sugarcane"
-
+FILES_STORE = "/home/vfinotti/Pictures/scrapyoutput/sugarcane"

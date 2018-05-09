@@ -13,9 +13,8 @@ class SugarcanespyderItem(scrapy.Item):
     # name = scrapy.Field()
     pass
 
-class SugarcaneSpider(scrapy.Item):
+class SugarcaneItem(scrapy.Item):
     # flower_name = scrapy.Field()
-    # page = scrapy.Field()
-    # file_urls = scrapy.Field()
+    page = scrapy.Field()
+    file_urls = scrapy.Field()
     # files = scrapy.Field()
-    pass
