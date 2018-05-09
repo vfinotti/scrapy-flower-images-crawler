@@ -10,11 +10,11 @@ def extract_whole_text(url):
         
     return url_text
 
-class FlowerSpider(scrapy.Spider):
-    name = "garden-flower-spider"
+class LeavesSpider(scrapy.Spider):
+    name = "garden-leaves-spider"
     # URL of plants photos of the last year period
     start_urls = [#"https://garden.org/apps/plant_photos/view/year/popular/0/?q_caption=&q_gallery=",
-                  "https://garden.org/apps/plant_photos/view/year/popular/0/?q_caption=&q_gallery=bloom", # just bloom pictures
+                  "https://garden.org/apps/plant_photos/view/forever/popular/0/?q_caption=&q_gallery=leaves", # just leaves pictures
     ]
 
     def parse(self, response):
@@ -33,11 +33,13 @@ class FlowerSpider(scrapy.Spider):
         # download if all elements (20) were downloaded or if this is the last
         # page, which doesn't always contain 20 elements
         if ((len(url) == 20) or (current_page == last_page)):
-            for flowerset in url:
-                imageURL = 'https://garden.org' + flowerset.css('img ::attr(src)').extract_first()
-                flower_name = extract_whole_text(flowerset.css('a ::text'))
+            for leavesset in url:
+                imageURL = 'https://garden.org' + leavesset.css('img ::attr(src)').extract_first()
+                # Replace string to download the orignal photo instead of the 250x250 px thumbnails (the only difference on their link is this part!)
+                imageURL = imageURL.replace("-250.jpg", ".jpg", 1)
+                leaves_name = extract_whole_text(leavesset.css('a ::text'))
 
-                yield GardenFlower(flower_name=flower_name, page=current_page, file_urls=[imageURL])
+                yield GardenFlower(leaves_name=leaves_name, page=current_page, file_urls=[imageURL])
 
         
         # reload page if there are less then 20 pictures and it is not the last

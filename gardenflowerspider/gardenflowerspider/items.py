@@ -18,3 +18,9 @@ class GardenFlower(scrapy.Item):
     page = scrapy.Field()
     file_urls = scrapy.Field()
     files = scrapy.Field()
+
+class GardenLeaf(scrapy.Item):
+    leaf_name = scrapy.Field()
+    page = scrapy.Field()
+    file_urls = scrapy.Field()
+    files = scrapy.Field()
